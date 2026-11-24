@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17221e">
+  <title>Ourine | Gestão de Serviços</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="assets/logo-ourine.jpg" alt="Ourine Joalheria">
+        <div><strong>OURINE</strong><small>Gestão de Serviços</small></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-link active" data-page="dashboard"><span>▦</span> Visão geral</button>
+        <button class="nav-link" data-page="orders"><span>▤</span> Ordens de serviço</button>
+        <button class="nav-link" data-page="production"><span>◷</span> Produção</button>
+        <button class="nav-link" data-page="quality"><span>◇</span> Gramagem e qualidade</button>
+        <button class="nav-link" data-page="outsourcing"><span>⇄</span> Terceirização</button>
+        <button class="nav-link" data-page="incidents"><span>⚑</span> Ocorrências</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="storage-note"><span class="dot"></span><div><b>Modo demonstração</b><small>Dados neste navegador</small></div></div>
+        <button class="nav-link" id="exportBtn"><span>⇩</span> Exportar dados</button>
+        <button class="nav-link" id="importBtn"><span>⇧</span> Importar backup</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+        <div class="breadcrumb">Ourine <span>/</span> <b id="pageName">Visão geral</b></div>
+        <div class="top-actions"><span class="today" id="today"></span><div class="avatar">O</div></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="page-heading">
+          <div><p class="eyebrow">PAINEL DE CONTROLE</p><h1>Visão geral</h1><p class="subheading">Acompanhe pedidos, prazos e serviços da joalheria.</p></div>
+          <button class="btn primary" data-action="new-order">＋ Nova ordem de serviço</button>
+        </div>
+        <section class="welcome-gallery" aria-label="Conheça a Ourine Joalheria">
+          <div class="welcome-copy">
+            <p class="eyebrow">OURINE JOALHERIA</p>
+            <h2>Organização e acompanhamento em cada etapa.</h2>
+            <p>Protótipo acadêmico para apoiar o controle das ordens de serviço, da produção e da qualidade.</p>
+          </div>
+          <div class="gallery-photos">
+            <img src="assets/fachada-ourine.jpg" alt="Fachada da Ourine Joalheria">
+            <img src="assets/interior-ourine.jpg" alt="Ambiente interno da Ourine Joalheria">
+          </div>
+        </section>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-label">Ordens cadastradas <span>▤</span></div><strong id="stat-total">0</strong><small>Total registrado</small></article>
+          <article class="stat-card"><div class="stat-label">Em andamento <span>◷</span></div><strong id="stat-progress">0</strong><small>Produção ou serviço externo</small></article>
+          <article class="stat-card"><div class="stat-label">Prontas para entrega <span>✓</span></div><strong id="stat-ready">0</strong><small>Aguardando retirada</small></article>
+          <article class="stat-card"><div class="stat-label">Prazo vencido <span>!</span></div><strong id="stat-late">0</strong><small>Requer atenção</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-heading"><div><h2>Pedidos recentes</h2><p>Últimas ordens cadastradas</p></div><button class="text-btn" data-page="orders">Ver todas →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>OS</th><th>Peça</th><th>Status</th><th>Prazo</th></tr></thead><tbody id="recentOrders"><tr><td colspan="4" class="empty">Nenhuma ordem cadastrada.</td></tr></tbody></table></div>
+          </article>
+          <article class="panel attention-panel">
+            <div class="panel-heading"><div><h2>Atenção aos prazos</h2><p>Pedidos que exigem acompanhamento</p></div></div>
+            <div id="attentionList" class="attention-list"><div class="empty">Nenhum pedido pendente.</div></div>
+          </article>
+        </div>
+        <div class="notice"><b>Importante:</b> esta versão é um protótipo funcional para demonstração. Os dados ficam salvos somente no navegador utilizado. Para uso simultâneo por vários funcionários, será necessário conectar um banco de dados e um servidor com autenticação.</div>
+      </section>
+
+      <section class="page" id="page-orders">
+        <div class="page-heading"><div><p class="eyebrow">CADASTRO E CONSULTA</p><h1>Ordens de serviço</h1><p class="subheading">Registre as peças, os serviços solicitados e os prazos.</p></div><button class="btn primary" data-action="new-order">＋ Nova ordem de serviço</button></div>
+        <div class="toolbar"><input id="orderSearch" class="search" placeholder="Buscar por número da OS ou peça..."><select id="statusFilter"><option value="">Todos os status</option><option>Na triagem</option><option>Na bancada</option><option>Em ourives externo</option><option>Em acabamento</option><option>Em conferência</option><option>Pronto para entrega</option><option>Entregue</option></select></div>
+        <article class="panel"><div class="table-wrap"><table><thead><tr><th>Nº OS</th><th>Peça / material</th><th>Entrada</th><th>Prazo</th><th>Status</th><th></th></tr></thead><tbody id="ordersTable"><tr><td colspan="6" class="empty">Nenhuma ordem cadastrada.</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-production">
+        <div class="page-heading"><div><p class="eyebrow">ACOMPANHAMENTO</p><h1>Produção</h1><p class="subheading">Visualize a etapa atual de cada peça.</p></div></div>
+        <div class="kanban" id="productionBoard"></div>
+      </section>
+
+      <section class="page" id="page-quality">
+        <div class="page-heading"><div><p class="eyebrow">CONFERÊNCIA FINAL</p><h1>Gramagem e qualidade</h1><p class="subheading">Registre pesagens, medidas e conferências antes da entrega.</p></div></div>
+        <article class="panel"><div class="panel-heading"><div><h2>Registro de pesagem</h2><p>Selecione uma OS para lançar os dados de entrada e saída.</p></div></div>
+          <form id="qualityForm" class="form-grid">
+            <label>Ordem de serviço<select name="orderId" id="qualityOrder" required><option value="">Selecione uma OS</option></select></label>
+            <label>Peso de entrada (g)<input name="initialWeight" type="number" min="0" step="0.001" placeholder="Ex.: 8.450"></label>
+            <label>Peso final (g)<input name="finalWeight" type="number" min="0" step="0.001" placeholder="Ex.: 8.420"></label>
+            <label>Medida final<input name="finalMeasure" placeholder="Ex.: aro 16 ou 19 cm"></label>
+            <label class="full">Conferência de acabamento<textarea name="qualityNotes" rows="2" placeholder="Descreva a conferência realizada..."></textarea></label>
+            <div class="form-actions full"><button class="btn primary" type="submit">Salvar conferência</button></div>
+          </form>
+        </article>
+        <article class="panel spaced"><div class="panel-heading"><div><h2>Histórico de pesagens</h2><p>Registros de gramagem cadastrados</p></div></div><div class="table-wrap"><table><thead><tr><th>OS</th><th>Peça</th><th>Entrada</th><th>Final</th><th>Diferença</th><th>Medida final</th></tr></thead><tbody id="qualityTable"><tr><td colspan="6" class="empty">Nenhuma pesagem cadastrada.</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-outsourcing">
+        <div class="page-heading"><div><p class="eyebrow">SERVIÇOS EXTERNOS</p><h1>Terceirização</h1><p class="subheading">Controle envios, profissionais parceiros e retornos.</p></div></div>
+        <article class="panel"><div class="panel-heading"><div><h2>Novo envio para profissional externo</h2><p>Registre a movimentação da peça.</p></div></div>
+          <form id="outsourcingForm" class="form-grid">
+            <label>Ordem de serviço<select name="orderId" id="outsourcingOrder" required><option value="">Selecione uma OS</option></select></label>
+            <label>Profissional / parceiro<input name="professional" required placeholder="Nome ou identificação interna"></label>
+            <label>Data de envio<input name="sentDate" type="date" required></label>
+            <label>Retorno previsto<input name="expectedDate" type="date"></label>
+            <label>Peso na saída (g)<input name="sentWeight" type="number" min="0" step="0.001"></label>
+            <label>Data de retorno<input name="returnedDate" type="date"></label>
+            <label class="full">Serviço solicitado<textarea name="service" rows="2" placeholder="Ex.: cravação, fundição especial..."></textarea></label>
+            <div class="form-actions full"><button class="btn primary" type="submit">Registrar envio</button></div>
+          </form>
+        </article>
+        <article class="panel spaced"><div class="panel-heading"><div><h2>Movimentações registradas</h2><p>Histórico de terceirização</p></div></div><div class="table-wrap"><table><thead><tr><th>OS</th><th>Profissional</th><th>Envio</th><th>Retorno previsto</th><th>Retorno real</th><th>Status</th></tr></thead><tbody id="outsourcingTable"><tr><td colspan="6" class="empty">Nenhum envio cadastrado.</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-incidents">
+        <div class="page-heading"><div><p class="eyebrow">REGISTRO DE OCORRÊNCIAS</p><h1>Atrasos e retrabalhos</h1><p class="subheading">Documente imprevistos e acompanhe as providências.</p></div></div>
+        <article class="panel"><div class="panel-heading"><div><h2>Nova ocorrência</h2><p>Associe o registro a uma Ordem de Serviço.</p></div></div>
+          <form id="incidentForm" class="form-grid">
+            <label>Ordem de serviço<select name="orderId" id="incidentOrder" required><option value="">Selecione uma OS</option></select></label>
+            <label>Tipo<select name="type" required><option value="Atraso">Atraso</option><option value="Retrabalho">Retrabalho</option><option value="Divergência de gramagem">Divergência de gramagem</option><option value="Outro">Outro</option></select></label>
+            <label>Data<input name="date" type="date" required></label>
+            <label>Responsável<input name="responsible" placeholder="Responsável pelo registro"></label>
+            <label class="full">Motivo / descrição<textarea name="description" rows="3" required placeholder="Descreva o ocorrido..."></textarea></label>
+            <label class="full">Providência adotada<textarea name="action" rows="2" placeholder="Ex.: cliente avisado, novo prazo combinado..."></textarea></label>
+            <div class="form-actions full"><button class="btn primary" type="submit">Salvar ocorrência</button></div>
+          </form>
+        </article>
+        <article class="panel spaced"><div class="panel-heading"><div><h2>Histórico de ocorrências</h2><p>Atrasos, correções e outras situações</p></div></div><div class="table-wrap"><table><thead><tr><th>OS</th><th>Tipo</th><th>Data</th><th>Descrição</th><th>Responsável</th></tr></thead><tbody id="incidentsTable"><tr><td colspan="5" class="empty">Nenhuma ocorrência cadastrada.</td></tr></tbody></table></div></article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="orderDialog" class="modal">
+    <form id="orderForm" method="dialog">
+      <div class="modal-heading"><div><p class="eyebrow">NOVA ORDEM</p><h2>Cadastrar ordem de serviço</h2></div><button type="button" class="close-btn" id="closeDialog">×</button></div>
+      <div class="form-grid">
+        <label>Número da OS *<input name="number" required placeholder="Ex.: 0442"></label>
+        <label>Peça *<input name="piece" required placeholder="Ex.: Aliança anatômica"></label>
+        <label>Material<input name="material" placeholder="Ex.: Ouro 18K (750)"></label>
+        <label>Peso de entrada (g)<input name="weight" type="number" min="0" step="0.001" placeholder="Ex.: 4.800"></label>
+        <label>Data de entrada *<input name="entryDate" type="date" required></label>
+        <label>Prazo previsto *<input name="dueDate" type="date" required></label>
+        <label>Medida / dimensão<input name="measure" placeholder="Ex.: aro 14, 20 cm"></label>
+        <label>Status inicial<select name="status"><option>Na triagem</option><option>Na bancada</option><option>Em ourives externo</option><option>Em acabamento</option><option>Em conferência</option><option>Pronto para entrega</option><option>Entregue</option></select></label>
+        <label class="full">Serviço solicitado<textarea name="service" rows="3" placeholder="Descreva o serviço solicitado..."></textarea></label>
+      </div>
+      <div class="form-actions"><button type="button" class="btn secondary" id="cancelDialog">Cancelar</button><button type="submit" class="btn primary">Salvar ordem</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
